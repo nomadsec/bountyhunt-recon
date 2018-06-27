@@ -25,7 +25,7 @@ tko-subs has --takeover flag off by default. Might I suggest you leave it off. a
 happy hacking :)
 
 
-### dependencies - install with gem, pip, go, apt, etc
+### dependencies
 
   * your own api keys
   * the tools listed above
@@ -37,5 +37,5 @@ happy hacking :)
   * ruby
   * argparse
   * dnspython
-  * requests
-  * golang (go)
+  * requests (use pip)
+  * golang
