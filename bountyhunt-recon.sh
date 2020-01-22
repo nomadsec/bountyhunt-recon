@@ -1,18 +1,18 @@
 #!/bin/bash
 echo "-------> aquatone -> sublist3r -> merge -> tko-subs"
 echo "-------> github/random-robbie for original script"
-aquatone-discover -d $1 --threads 10
-aquatone-scan -d $1 --ports huge --threads 10
-DEBUG=nightmare xvfb-run -a aquatone-gather -d $1 --threads 10
-aquatone-takeover -d $1 --threads 10
-sublist3r -d $1 -v -b -o /root/results/$1/$1-subdomains.txt
-dos2unix /root/results/$1/$1-subdomains.txt
-cat /root/results/$1/$1-subdomains.txt /root/aquatone/$1/urls.txt >> /root/results/$1/$1-final.txt
-sort /root/results/$1/$1-final.txt | uniq -u
-/root/go/bin/tko-subs -domains=/root/results/$1/$1-final.txt -data=/root/providers-data.csv -output=/root/results/$1/tko-output.csv
-python /root/tools/crlf_scan.py -i /root/results/$1/$1-final.txt -o /root/results/$1/crlf.txt
+mkdir /YOUR/PATH/targets/$1
+touch /YOUR/PATH/targets/$1/$1-hosts.txt
+amass enum -active -d $1 -o /YOUR/PATH/targets/$1/$1-hosts.txt 
+cat /YOUR/PATH/targets/$1/$1-hosts.txt | aquatone -ports large -out /YOUR/PATH/targets/$1/aquatone
+sublist3r -d $1 -v -b -o /YOUR/PATH/targets/$1/$1-subdomains.txt
+dos2unix /YOUR/PATH/targets/$1/$1-subdomains.txt
+cat /YOUR/PATH/targets/$1/$1-subdomains.txt /root/aquatone/$1/urls.txt >> /YOUR/PATH/targets/$1/$1-final.txt
+sort /YOUR/PATH/targets/$1/$1-final.txt | uniq -u
+go run /YOUR/PATH/tools/tko-subs/tko-subs.go -domains=/YOUR/PATH/targets/$1/$1-final.txt -data=/YOUR/PATH/tools/tko-subs/providers-data.csv -output=/YOUR/PATH/targets/$1/tko-output.csv
+crlf scan -i /YOUR/PATH/targets/$1/$1-final.txt -o /YOUR/PATH/targets/$1/crlf.txt
 echo "-------> unicornscan ALL ports then nmap against open findings"
 echo "-------> jexboss then content discovery with dirsearch"
-/root/tools/onetwopunch/onetwopunch.sh -t /root/results/$1/$1-final.txt -n A,o /root/results/$1/$1-nmap-ports.txt
-python root/tools/jexboss/jexboss.py -mode file-scan -file /root/results/$1/$1-final.txt -out /root/results/$1/$1-jboss.log
-python root/tools/dirsearch/dirsearch.py /root/results/$1/$1-final.txt
+/YOUR/PATH/tools/onetwopunch/onetwopunch.sh -t /YOUR/PATH/targets/$1/$1-final.txt -n A,o /YOUR/PATH/targets/$1/$1-nmap-ports.txt
+/YOUR/PATH/tools/jexboss/jexboss.py -mode file-scan -file /YOUR/PATH/targets/$1/$1-final.txt -out /YOUR/PATH/targets/$1/$1-jboss.log
+/YOUR/PATH/tools/dirsearch/dirsearch.py /YOUR/PATH/targets/$1/$1-final.txt
